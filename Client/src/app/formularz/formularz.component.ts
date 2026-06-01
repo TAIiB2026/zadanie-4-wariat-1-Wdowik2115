@@ -68,8 +68,7 @@ export class FormularzComponent implements OnDestroy {
 
   public onSubmit() {
     this.wczytywanie = true;
-    console.log(this.data)
-    let request: Observable<boolean>;
+    let request: Observable<any>;
 
     const [year, month, day] = this.data.split('-').map(Number);
     const data: Date = new Date(year, month - 1, day);
@@ -80,16 +79,15 @@ export class FormularzComponent implements OnDestroy {
       request = this.submitService.Post(this.nazwa, this.cena, data);
     }
 
-    request.subscribe({next: (res) => {
-      if(res) {
+    request.subscribe({
+      next: () => {
         this.router.navigateByUrl("/produkty");
-      } else {
+      }, 
+      error: (err) => {
+        console.error("Błąd zapisu:", err);
         alert("Wystąpił błąd podczas próby zapisu zmian.");
         this.wczytywanie = false;
       }
-    }, error: (err) => {
-      alert("Wystąpił błąd podczas próby zapisu zmian.");
-        this.wczytywanie = false;
-    }})
+    });
   }
 }
